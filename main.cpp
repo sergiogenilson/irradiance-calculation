@@ -32,30 +32,30 @@ int main(int argc, char** argv) {
         setNumThreads(atoi(argv[2]));
         omp_set_num_threads(atoi(argv[2]));
 
-        namedWindow( "depth", WINDOW_AUTOSIZE );
-        namedWindow( "irradiance", WINDOW_AUTOSIZE );
-
         Mat frame;
         Mat irradiance, inverseDepth, gray, aux;
         cap >> frame;
         Irradiance i = Irradiance(frame);
         while (1) {
-            imshow("depth", frame);
+            // imshow("depth", frame);
             cvtColor(frame, gray, cv::COLOR_RGB2GRAY);
             aux = i.computeIrradiance(gray);
             aux.convertTo(irradiance, CV_8U);
-            imshow("irradiance", irradiance);
+            // imshow("irradiance", irradiance);
             
             int key = waitKey(1);
             if (key == 27) {
                 break;
-            } else if (key == 's') {
-                imwrite("depth.png", gray);
-                imwrite("irradiance.png", irradiance);
+            // } else if (key == 's') {
+            //     imwrite("depth.png", gray);
+            //     imwrite("irradiance.png", irradiance);
             }
             irradianceCalcTime = i.elapsedTime;
             frameCount = i.frameCount;
             cap >> frame;
+            if (!(frame.cols > 0)) {
+                break;
+            }
         }
         
     } catch(const Exception& ex) 	{
@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
     cout << " - total time: " << totalTime << endl;
     cout << " - irradiance calc time: " << irradianceCalcTime << endl;
     cout << " - frames number: " << frameCount << endl;
-    cout << "--> Frames/s = " << frameCount/irradianceCalcTime << endl;
+    cout << "--> Frames/s = " << frameCount/totalTime << endl;
     return 0;
     
 }
